@@ -1,0 +1,286 @@
+/* ミルキーダークブラウン系の色変数 */
+:root {
+    /* 4. 全体の文字色を統一 (少し濃いめの茶色系) */
+    --main-text-color: #775e4ed3; 
+    /* 3 & 4. 送信ボタン、強調色 (ミルキーダークブラウン) */
+    --accent-color: #705445e1; 
+    --light-bg-color: #F8F8F8;
+    --input-bg-color: #F9F9F9;
+    --error-color: #FF0000;
+    --placeholder-color: #a79784; /* プレースホルダーの色 */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--light-bg-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header {
+    width: 100%;
+    padding: 0;
+    text-align: center;
+}
+
+.logo {
+    font-family: serif;
+    font-size: 30px;
+    font-weight: normal;
+    color: var(--main-text-color);
+    margin-bottom: 15px;
+}
+
+/* 2. FashionablyLateの下の区切り線を画面幅いっぱいに広げる */
+.header-divider {
+    border: none;
+    border-top: 1px solid #CCC;
+    width: 100vw; /* 画面の幅全体 */
+    margin: 0; /* マージンをリセット */
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    margin-bottom: 40px;
+}
+
+.container {
+    width: 80%;
+    max-width: 600px; /* フォーム全体の最大幅 */
+    padding: 0 0 80px 0;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--main-text-color);
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    display: flex;
+    margin-bottom: 25px;
+    align-items: flex-start;
+}
+
+.form-label {
+    width: 35%;
+    min-width: 150px;
+    padding-top: 5px;
+    font-weight: bold;
+    color: var(--main-text-color); /* 4. 文字色を統一 */
+    font-size: 14px;
+}
+
+.required::after {
+    content: "※";
+    color: var(--error-color);
+    margin-left: 5px;
+    font-size: 12px;
+}
+
+.form-input-group {
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- 入力要素の共通スタイル --- */
+.input-text,
+.input-select,
+.input-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+    font-size: 14px;
+    background-color: var(--input-bg-color);
+    color: var(--main-text-color); /* 4. 入力文字色も統一 */
+}
+
+.input-text::placeholder,
+.input-textarea::placeholder {
+    color: var(--placeholder-color);
+}
+
+/* --- エラー表示のスタイル --- */
+.is-invalid {
+    border-color: var(--error-color) !important;
+}
+
+/* 1. 修正点: 複数エラーメッセージを横並びにするための flex 設定 */
+.error-messages {
+    display: flex;
+    /* エラーメッセージが長くなった場合は折り返す */
+    flex-wrap: wrap; 
+    gap: 10px;
+    width: 100%;
+    margin-top: 5px;
+    padding: 0;
+}
+
+.error-text {
+    color: var(--error-color);
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    /* 1. 修正点: `name-fields` (2つの入力欄) の下で、それぞれのエラーメッセージが全文表示されるように幅を調整。
+       flexアイテムとして扱うため、`flex-basis` を使用し、折り返しを許可。
+       flex-grow: 1 で可能な限り幅を取り、flex-basis: 0 でコンテンツ量に応じて幅を調整
+       または、シンプルに `width: 48%;` 程度にして、折り返し時に横幅を確保する。
+       今回は、`width: 48%` にして、2つのエラーメッセージが入りきらない場合は下の行に折り返すようにします。
+    */
+    width: 48%; 
+    /* 1. 修正点: 全文表示を優先するため、強制的な省略設定を削除 */
+    white-space: normal; 
+    overflow: visible; 
+    text-overflow: clip;
+}
+
+.full-width-error {
+    width: 100%;
+    /* 幅いっぱいに表示するエラーは通常通り改行を許可 */
+    white-space: normal; 
+    overflow: visible;
+    text-overflow: clip;
+}
+
+/* --- 姓名/電話番号のスタイル --- */
+.name-fields {
+    display: flex;
+    gap: 10px;
+}
+
+.name-input {
+    flex-grow: 1;
+}
+
+.tel-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+.tel-input {
+    width: 30%;
+    text-align: center;
+}
+
+/* --- 性別 (ラジオボタン) のスタイル --- */
+.radio-group {
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    height: 38px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    color: var(--main-text-color); /* 4. 文字色を統一 */
+}
+
+/* 4. ラジオボタンの選択時の●の色を統一 */
+.radio-label input[type="radio"] {
+    /* デフォルトのラジオボタンを非表示にし、カスタムデザインを作成 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #CCC;
+    border-radius: 50%;
+    margin-right: 5px;
+    position: relative;
+    cursor: pointer;
+    background-color: #FFF;
+}
+
+.radio-label input[type="radio"]:checked::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-color); /* 送信ボタンと同じ色 */
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.input-textarea {
+    height: 100px;
+    resize: none;
+}
+
+/* --- お問い合わせの種類 (セレクトボックス) のスタイル --- */
+
+.select-wrapper {
+    position: relative; /* 疑似要素の基準 */
+}
+
+/* 1. ▼をセレクトボックスのみに適用するため、wrapperクラスに移動 */
+.input-select {
+    /* デフォルトの矢印を非表示 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 30px; /* 疑似要素のための余白 */
+}
+
+/* 1. 矢印 (▼) は select-wrapper の疑似要素として設定 */
+.select-wrapper::after {
+    content: "▼";
+    position: absolute;
+    top: 50%;
+    /* 2. 修正点: 矢印が中央からやや右にくるように調整 */
+    right: 15px; 
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #666;
+    font-size: 10px;
+}
+
+/* 3. 「選択してください」をプレースホルダーのように透けた色にする */
+.input-select option:first-child[disabled]:selected {
+    color: var(--placeholder-color);
+}
+.input-select option {
+    color: var(--main-text-color);
+}
+
+
+/* --- ボタンのスタイル --- */
+
+.submit-button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* 4. 送信ボタンの色味は既にミルキーダークブラウン系 */
+.submit-button {
+    background-color: var(--accent-color);
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #5d4538;
+}

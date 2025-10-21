@@ -1,0 +1,163 @@
+/* ミルキーダークブラウン系の色変数 */
+:root {
+    --main-text-color: #9c7f6cd3; 
+    --accent-color: #a48b7ee1; /* 見出しの背景色・送信ボタンの色 */
+    --light-bg-color: #F8F8F8;
+    --table-border-color: #E8E8E8; 
+    --value-border-color: #cccccc; /* 入力内容側の囲い線に使用する色を定義 */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--light-bg-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header {
+    width: 100%;
+    padding: 0;
+    text-align: center;
+}
+
+.logo {
+    font-family: serif;
+    font-size: 30px;
+    font-weight: normal;
+    color: var(--main-text-color);
+    margin-bottom: 15px;
+}
+
+/* 画面いっぱいの区切り線 */
+.header-divider {
+    border: none;
+    border-top: 1px solid #CCC;
+    width: 100vw; 
+    margin: 0; 
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    /* 修正1: フォーム上の空間を広げるため、下の余白を増やしました */
+    margin-bottom: 30px; 
+}
+
+.container {
+    width: 80%;
+    max-width: 600px;
+    padding: 0 0 80px 0;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: normal;
+    text-align: center;
+    /* 修正1: ヘッダーからの距離を広げるため、上の余白を減らしました */
+    margin-top: 0;
+    margin-bottom: 30px; 
+    color: var(--main-text-color);
+}
+
+.confirm-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- 確認テーブルのスタイル --- */
+.confirm-table {
+    width: 100%;
+    /* 修正2: 全体の囲い線のため、ボーダーを追加 */
+    border: 1px solid var(--value-border-color); 
+    border-collapse: collapse; 
+    margin-bottom: 30px;
+}
+
+.confirm-row {
+    display: flex;
+    /* 修正2: 行の区切り線は薄い色を維持 */
+    border-bottom: 1px solid var(--table-border-color);
+}
+
+.confirm-row:last-of-type {
+    /* 修正2: テーブル全体に線があるので、行の最下部の線は削除 */
+    border-bottom: none; 
+}
+
+.confirm-label {
+    width: 35%;
+    min-width: 150px;
+    padding: 15px 10px;
+    font-weight: bold;
+    background-color: var(--accent-color); /* 茶色 */
+    color: #ffffffde; /* 白色 */
+    font-size: 14px;
+    text-align: left;
+    box-sizing: border-box;
+    /* 修正2: 左側の線はテーブル全体で付いているので不要。右側の線も不要。 */
+    border-right: none;
+    border-left: none; 
+}
+
+.confirm-value {
+    width: 65%;
+    padding: 15px 10px; 
+    font-size: 14px;
+    color: var(--main-text-color);
+    text-align: left;
+    box-sizing: border-box;
+    word-break: break-word; 
+    white-space: pre-wrap; 
+    /* 修正2: 入力内容側に囲い線を追加 */
+    border-left: 1px solid var(--value-border-color);
+    border-right: 1px solid var(--value-border-color);
+}
+
+/* --- ボタンのスタイル (修正点: 横並びと下線リンク化) --- */
+
+.button-group {
+    /* 修正点: ボタンを横並びにする */
+    display: flex;
+    justify-content: center; /* 中央に配置 */
+    align-items: center;
+    gap: 20px; /* ボタン間のスペース */
+    margin-top: 20px;
+}
+
+.submit-button {
+    background-color: var(--accent-color);
+    color: #ffffffdd;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 2%;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    width: 100px; 
+}
+
+.submit-button:hover {
+    background-color: #86776f;
+}
+
+.back-button {
+    /* 修正点: リンク風（下線付き）にする */
+    background: none;
+    border: none;
+    color: var(--accent-color); /* 文字色を茶色に */
+    cursor: pointer;
+    font-size: 14px;
+    padding: 5px 10px;
+    transition: opacity 0.3s;
+    width: auto; /* 幅をテキストに合わせる */
+    text-decoration: underline; /* 下線を追加 */
+    font-weight: normal; /* 太字を解除 */
+}
+
+.back-button:hover {
+    opacity: 0.7;
+}
