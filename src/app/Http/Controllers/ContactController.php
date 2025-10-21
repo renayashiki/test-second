@@ -8,7 +8,7 @@ use App\Http\Requests\ContactRequest;
 class ContactController extends Controller
 {
     // ----------------------------------------------------
-    // 1. 入力画面表示 (GET /contact)
+    // 1. 入力画面表示 (GET /)
     // ----------------------------------------------------
     public function index()
     {
@@ -24,7 +24,7 @@ class ContactController extends Controller
     }
 
     // ----------------------------------------------------
-    // 2. 確認画面処理 (POST /contact/confirm)
+    // 2. 確認画面処理 (POST /confirm)
     // ----------------------------------------------------
     // ★ContactRequest::class を使用し、バリデーションを Form Request に任せる
     public function confirm(ContactRequest $request)
@@ -43,7 +43,7 @@ class ContactController extends Controller
     }
 
     // ----------------------------------------------------
-    // 3. 送信処理 (POST /contact/send)
+    // 3. 送信処理 (POST /thanks)
     // ----------------------------------------------------
     public function send(Request $request)
     {
@@ -61,7 +61,15 @@ class ContactController extends Controller
         // データベース処理後、セッションデータをクリア
         $request->session()->forget('contact_data');
 
-        // 完了画面へ遷移
+        // 完了画面へリダイレクト (二重送信防止のためPOSTの後にGETリダイレクトが望ましい)
+        return redirect()->route('contact.thanks'); 
+    }
+    
+    // ----------------------------------------------------
+    // 4. 完了画面表示 (GET /thanks)
+    // ----------------------------------------------------
+    public function thanks()
+    {
         return view('contact.thanks');
     }
 }

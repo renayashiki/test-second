@@ -14,15 +14,14 @@ use App\Http\Controllers\ContactController;
 |
 */
 
-// お問い合わせフォームの入力画面
+// 1. お問い合わせフォームの入力画面
 Route::get('/', [ContactController::class, 'index'])->name('contact.index');
 
 
-// 【★このルートが不足していました】確認画面へのデータ送信と表示
-Route::post('/contact/confirm', [ContactController::class, 'confirm'])->name('contact.confirm');
+// 2. 確認画面へのデータ送信と表示 (URL: /confirm)
+Route::post('/confirm', [ContactController::class, 'confirm'])->name('contact.confirm');
 
-// データ保存と完了画面への遷移
-Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
-
-// トップページ（http://localhost/）にアクセスしたときに、お問い合わせページを表示する場合
-// Route::get('/', [ContactController::class, 'index'
+// 3. データ保存と完了画面への遷移 (URL: /thanks)
+// 完了画面の表示ルートと送信処理のルートを分け、完了画面へのURLもシンプルにします。
+Route::post('/thanks', [ContactController::class, 'send'])->name('contact.send');
+Route::get('/thanks', [ContactController::class, 'thanks'])->name('contact.thanks');

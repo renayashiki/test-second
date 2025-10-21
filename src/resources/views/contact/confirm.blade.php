@@ -8,12 +8,14 @@
 <body>
     <header class="header">
         <h1 class="logo">FashionablyLate</h1>
+        <hr class="header-divider"> 
     </header>
 
-    <div class="content">
+    <div class="container">
         <h2 class="page-title">Confirm</h2>
         
-        <form action="/contact/send" method="POST" class="confirm-form">
+        <form action="{{ route('contact.send') }}" method="POST" class="confirm-form">
+          @csrf
             <div class="confirm-table">
                 <div class="confirm-row">
                     <div class="confirm-label">お名前</div>
@@ -66,7 +68,6 @@
 
             <div class="button-group">
                 <button type="submit" class="submit-button">送信</button>
-                
                 <button type="submit" formaction="/contact" formmethod="GET" class="back-button">修正</button>
             </div>
         </form>
