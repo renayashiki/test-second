@@ -19,8 +19,8 @@
             <div class="confirm-table">
                 <div class="confirm-row">
                     <div class="confirm-label">お名前</div>
-                    <div class="confirm-value">山田 太郎</div>
-                    <input type="hidden" name="name" value="山田 太郎">
+                    <div class="confirm-value">山田  太郎</div>
+                    <input type="hidden" name="name" value="山田   太郎">
                 </div>
                 
                 <div class="confirm-row">
