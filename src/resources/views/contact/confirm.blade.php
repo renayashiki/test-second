@@ -68,7 +68,7 @@
 
             <div class="button-group">
                 <button type="submit" class="submit-button">送信</button>
-                <button type="submit" formaction="/contact" formmethod="GET" class="back-button">修正</button>
+                <button type="submit" formaction="/" formmethod="GET" class="back-button">修正</button>
             </div>
         </form>
     </div>

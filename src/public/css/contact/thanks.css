@@ -1,69 +1,84 @@
+/* ミルキーダークブラウン系の色変数 (変更なし) */
+:root {
+    --main-text-color: #775e4ed3; 
+    --accent-color: #705445e1; /* HOMEボタンの色 */
+    --light-bg-color: #F8F8F8;
+}
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #F8F8F8;
+    background-color: var(--light-bg-color);
     margin: 0;
     padding: 0;
+    /* 2. メッセージを画面中央に配置するため、Flexboxを設定 */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh; /* 画面全体を覆う */
-    overflow: hidden; /* 背景文字がはみ出してもスクロールさせない */
-}
-
-.container {
+    justify-content: center; /* 水平中央 */
+    align-items: center; /* 垂直中央 */
+    min-height: 100vh; /* 画面全体を使う */
     position: relative;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    overflow: hidden; 
 }
 
-/* 背景の 'Thank you' の文字を再現 */
+/* 2. メッセージボックス全体を画面中央に固定 */
+.container {
+    /* bodyのFlexbox設定により、自動的にど真ん中に配置されます */
+    text-align: center;
+    /* この値はメッセージを手前に出すための値として既に適切です */
+    z-index: 10; 
+}
+
+/* 1. 背景の「Thank you」の配置とスタイルを調整 */
 .thank-you-background {
-    position: absolute;
-    font-family: serif;
-    font-size: 200px; /* 非常に大きなサイズ */
-    color: #EDEDED; /* 非常に薄いグレー */
-    font-weight: bold;
-    letter-spacing: 5px;
-    z-index: 1; /* 手前の要素より奥に配置 */
-    /* 見本画像に近い位置に微調整 */
-    top: 50%;
+    position: absolute; 
+    /* 垂直位置を微調整 */
+    top: 1%; 
     left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none; /* クリック不可に */
+    transform: translate(-50%, -30%); 
+    
+    font-size: 15vw; 
+    max-font-size: 250px; 
+    
+    font-weight: normal;
+    color: #EFEFEF; 
+    opacity: 0.9; 
+    
+    font-family: serif; 
+    letter-spacing: 5px; 
+    white-space: nowrap; 
+    /* 修正: z-indexをさらに低い値（例: 0）に設定し、確実に背景にする */
+    z-index: 0; 
 }
 
 .message-box {
-    background-color: #FFFFFF;
-    padding: 50px 80px;
-    border-radius: 5px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-    text-align: center;
-    z-index: 2; /* 背景文字より手前に配置 */
+    margin: 0;
+    /* 念のため、メッセージボックスにも z-index を設定 */
+    z-index: 10; 
+    /* z-indexを有効にするために position: relative を追加 */
+    position: relative; 
 }
 
 .thank-you-text {
-    font-size: 18px;
-    font-weight: normal;
-    color: #333;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--main-text-color);
     margin-bottom: 25px;
 }
 
 .home-button {
-    background-color: #000000;
-    color: #FFFFFF;
-    text-decoration: none; /* リンクの下線を削除 */
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: #ffffffdd;
+    text-decoration: none;
     border: none;
-    padding: 10px 30px;
-    border-radius: 5px;
+    padding: 10px 20px;
+    border-radius: 2%;
     cursor: pointer;
     font-size: 14px;
-    display: inline-block; /* aタグをボタンのように扱う */
-    transition: opacity 0.3s;
+    transition: background-color 0.3s;
+    width: 100px; 
+    text-align: center;
 }
 
 .home-button:hover {
-    opacity: 0.8;
+    background-color: #86776f;
 }
