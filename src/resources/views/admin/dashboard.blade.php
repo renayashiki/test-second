@@ -1,43 +1,45 @@
 @extends('admin.layouts.app')
 
-@section('content')
-    <div class="dashboard-page">
-        <h1 class="page-title">確認テスト お問い合わせフォーム</h1>
+@section('title', '管理システム')
 
+@section('content')
+    <h2 class="page-title">管理システム</h2>
+    <div class="dashboard-page">
+        
         <!-- 検索フォームエリア -->
         <div class="search-form-area">
-            <form action="{{ route('admin.dashboard') }}" method="GET" id="search-form">
-                <div class="search-row">
-                    <!-- 名前・メールアドレス検索 -->
-                    <div class="search-group name-email-group">
-                        <input type="text" name="name_email" placeholder="名前またはメールアドレスを入力してください" value="{{ request('name_email') }}">
-                    </div>
+            <form action="{{ route('admin.dashboard') }}" method="GET" id="search-form" class="search-form-single-row">
+                
+                <!-- 名前・メールアドレス検索 -->
+                <div class="search-group name-email-group">
+                    <input type="text" name="name_email" placeholder="名前またはメールアドレスを入力してください" value="{{ request('name_email') }}">
+                </div>
 
-                    <!-- 性別 -->
-                    <div class="search-group select-group">
-                        <select name="gender" class="select-gender">
-                            <option value="" disabled selected>性別</option>
-                            <option value="all" @if(request('gender') === 'all') selected @endif>全て</option>
-                            <option value="男性" @if(request('gender') === '男性') selected @endif>男性</option>
-                            <option value="女性" @if(request('gender') === '女性') selected @endif>女性</option>
-                            <option value="その他" @if(request('gender') === 'その他') selected @endif>その他</option>
-                        </select>
-                    </div>
+                <!-- 性別 -->
+                <div class="search-group select-group gender-group">
+                    <select name="gender" class="select-gender">
+                        <option value="" disabled @if(!request('gender') || request('gender') === '性別') selected @endif>性別</option>
+                        <option value="all" @if(request('gender') === 'all') selected @endif>全て</option>
+                        <option value="男性" @if(request('gender') === '男性') selected @endif>男性</option>
+                        <option value="女性" @if(request('gender') === '女性') selected @endif>女性</option>
+                        <option value="その他" @if(request('gender') === 'その他') selected @endif>その他</option>
+                    </select>
+                </div>
 
-                    <!-- お問い合わせ種類 -->
-                    <div class="search-group select-group">
-                        <select name="category" class="select-category">
-                            <option value="" disabled selected>お問い合わせの種類</option>
-                            <!-- 実際にはDBから取得したカテゴリをループ -->
-                            <option value="商品の交換について" @if(request('category') === '商品の交換について') selected @endif>商品の交換について</option>
-                            <option value="商品の返品について" @if(request('category') === '商品の返品について') selected @endif>商品の返品について</option>
-                        </select>
-                    </div>
+                <!-- お問い合わせ種類 -->
+                <div class="search-group select-group category-group">
+                    <select name="category" class="select-category">
+                        <option value="" disabled @if(!request('category')) selected @endif>お問い合わせの種類</option>
+                        {{-- $categories は DashboardController から渡される --}}
+                        @foreach ($categories as $id => $name)
+                            <option value="{{ $id }}" @if(request('category') == $id) selected @endif>{{ $name }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-                    <!-- 日付 -->
-                    <div class="search-group date-group">
-                        <input type="date" name="date" class="input-date" value="{{ request('date') }}">
-                    </div>
+                <!-- 日付 -->
+                <div class="search-group date-group">
+                    <input type="date" name="date" class="input-date" value="{{ request('date') }}">
                 </div>
 
                 <div class="search-actions">
@@ -49,23 +51,23 @@
 
         <!-- データを表示するテーブルエリア -->
         <div class="data-area">
-            <div class="table-actions">
-                <button class="export-btn">エクスポート</button>
-            </div>
             
-            <div class="pagination-top">
-                <!-- 実際には $contacts->links('pagination::admin') などを使用 -->
-                <div class="pagination-info">全{{ $contacts->total() ?? 14 }}件中 {{ $contacts->firstItem() ?? 1 }}〜{{ $contacts->lastItem() ?? 7 }}件表示</div>
-                <div class="pagination-links">
-                    {{-- ページネーションリンクをここに表示 --}}
-                    <div class="dummy-links">
-                        <a href="#" class="page-link prev-link">&lt;</a>
-                        <span class="page-link active">1</span>
-                        <a href="#" class="page-link">2</a>
-                        <a href="#" class="page-link">3</a>
-                        <a href="#" class="page-link">4</a>
-                        <a href="#" class="page-link">5</a>
-                        <a href="#" class="page-link next-link">&gt;</a>
+            <div class="table-actions-and-pagination">
+                <!-- エクスポートボタンを表の横幅先頭に配置 -->
+                <form action="{{ route('admin.export') }}" method="GET" class="export-form">
+                    {{-- 現在の検索条件を hidden フィールドとして渡す --}}
+                    @foreach (request()->query() as $key => $value)
+                        @if($key != 'page')
+                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endif
+                    @endforeach
+                    <button type="submit" class="export-btn">エクスポート</button>
+                </form>
+
+                <div class="pagination-top">
+                    <div class="pagination-links">
+                        {{-- Laravel標準のページネーションリンクを表示 --}}
+                        {{ $contacts->links() }} 
                     </div>
                 </div>
             </div>
@@ -81,16 +83,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 実際には $contacts をループ -->
                     @foreach ($contacts as $contact)
                         <tr>
-                            <td class="col-name">{{ $contact['name'] }}</td>
-                            <td class="col-gender">{{ $contact['gender'] }}</td>
-                            <td class="col-email">{{ $contact['email'] }}</td>
-                            <td class="col-category">{{ $contact['category'] }}</td>
+                            <td class="col-name">{{ $contact->last_name }} {{ $contact->first_name }}</td>
+                            <td class="col-gender">{{ $contact->gender }}</td>
+                            <td class="col-email">{{ $contact->email }}</td>
+                            {{-- カテゴリIDを日本語名に変換して表示 (category_idを使用するように修正) --}}
+                            <td class="col-category">{{ $categories[$contact->category_id] ?? '不明' }}</td> 
                             <td class="col-detail">
-                                <!-- data-contactにJSON形式でデータを埋め込み、JSで利用 -->
-                                <button class="detail-btn" data-contact="{{ json_encode($contact) }}">詳細</button>
+                                <button class="detail-btn" data-contact="{{ $contact->toJson() }}">詳細</button>
                             </td>
                         </tr>
                     @endforeach
@@ -99,19 +100,93 @@
         </div>
     </div>
     
-    <script>
-        // リセットボタン機能
-        document.getElementById('reset-btn').addEventListener('click', function() {
-            // フォームのすべての入力値をリセット
-            document.getElementById('search-form').reset();
-            
-            // 選択ボックスのデフォルトを「性別」に戻す
-            document.querySelector('.select-gender').value = "";
-            document.querySelector('.select-category').value = "";
-            
-            // 検索フォームを送信（リセット後の結果を表示するため）
-            document.getElementById('search-form').submit();
-        });
-    </script>
+    <!-- モーダルウィンドウのHTML構造 -->
+    <div id="contact-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">お問い合わせ詳細</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-detail-row"><div class="modal-label">お名前</div><div class="modal-value" id="modal-name"></div></div>
+                <div class="modal-detail-row"><div class="modal-label">性別</div><div class="modal-value" id="modal-gender"></div></div>
+                <div class="modal-detail-row"><div class="modal-label">メールアドレス</div><div class="modal-value" id="modal-email"></div></div>
+                <div class="modal-detail-row"><div class="modal-label">電話番号</div><div class="modal-value" id="modal-tel"></div></div>
+                <div class="modal-detail-row"><div class="modal-label">住所</div><div class="modal-value" id="modal-address"></div></div>
+                <div class="modal-detail-row"><div class="modal-label">建物名</div><div class="modal-value" id="modal-building"></div></div>
+                <div class="modal-detail-row"><div class="modal-label">お問い合わせの種類</div><div class="modal-value" id="modal-category"></div></div>
+                <div class="modal-detail-row"><div class="modal-label">お問い合わせ内容</div><div class="modal-value" id="modal-detail"></div></div>
+            </div>
+            <div class="modal-actions">
+                <form id="delete-form" method="POST" action="">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="delete-btn-modal">削除</button>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
+@section('scripts')
+<script>
+    // お問い合わせの種類マッピングをJavaScriptで利用可能にする
+    const CATEGORIES = @json($categories);
+
+    // --- 検索フォームのリセット機能 ---
+    document.getElementById('reset-btn').addEventListener('click', function() {
+        // フォームのすべての入力値をリセット
+        document.getElementById('search-form').reset();
+        
+        // 選択ボックスのデフォルト値をクリア (placeholderの選択に戻る)
+        document.querySelector('.select-gender').value = "";
+        document.querySelector('.select-category').value = "";
+        
+        // 検索フォームを送信（クエリパラメータをクリア）
+        window.location.href = '{{ route('admin.dashboard') }}';
+    });
+
+    // --- モーダル機能 ---
+    const modal = document.getElementById('contact-modal');
+    const detailButtons = document.querySelectorAll('.detail-btn');
+    const closeModal = document.querySelector('.modal-close');
+
+    detailButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const contactData = JSON.parse(this.getAttribute('data-contact'));
+
+            // データをモーダルに挿入
+            document.getElementById('modal-name').textContent = contactData.last_name + ' ' + contactData.first_name;
+            document.getElementById('modal-gender').textContent = contactData.gender;
+            document.getElementById('modal-email').textContent = contactData.email;
+            // JSONデータには tel, address, building_name が含まれている前提でそのまま使用
+            document.getElementById('modal-tel').textContent = contactData.tel;
+            document.getElementById('modal-address').textContent = contactData.address;
+            document.getElementById('modal-building').textContent = contactData.building_name || '-';
+            
+            // カテゴリIDを日本語名に変換 (category_idを使用するように修正)
+            document.getElementById('modal-category').textContent = CATEGORIES[contactData.category_id] || '不明'; 
+            
+            document.getElementById('modal-detail').textContent = contactData.detail;
+            
+            // 削除フォームのアクションURLを設定
+            const deleteRoute = '{{ route('admin.delete', ['id' => 'TEMP_ID']) }}'.replace('TEMP_ID', contactData.id);
+            document.getElementById('delete-form').setAttribute('action', deleteRoute);
+
+            modal.style.display = 'flex';
+        });
+    });
+
+    // 閉じるボタン
+    closeModal.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    // モーダル外のクリックで閉じる
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+</script>
+@endsection

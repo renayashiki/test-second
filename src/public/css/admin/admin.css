@@ -3,104 +3,85 @@
 ---------------------------------------------------- */
 .admin-main {
     width: 100%;
+    /* 2. 背景を白に設定 */
+    background-color: #FFFFFF; 
     padding: 20px 0;
     justify-content: center;
-    /* common.cssで flex-start なので、centerに調整 */
-    align-items: flex-start; 
+    align-items: flex-start;
 }
 
 .content-wrapper {
     width: 90%;
-    max-width: 1200px; /* PCでの幅を制限 */
-    padding: 0 20px;
+    max-width: 1200px;
+    padding: 0; /* paddingを削除して、検索欄と表の横幅を揃える */
     margin: 0 auto;
 }
 
-.dashboard-page {
-    /* 管理画面の主要コンテナ */
-}
-
 .page-title {
-    /* common.cssから継承 */
     text-align: left;
     margin-bottom: 20px;
-    color: #333; /* タイトルは濃い色で見やすく */
+    color: #333;
 }
 
 /* ----------------------------------------------------
    検索フォームエリア
 ---------------------------------------------------- */
 .search-form-area {
-    background-color: white;
-    padding: 30px;
-    border-radius: 5px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 40px;
+    background-color: white; /* フォームの背景も白 */
+    padding: 0; /* フォームエリアのパディングを削除 */
+    margin-bottom: 30px;
 }
 
-#search-form {
+/* 3. 検索欄を一行に（表の横幅と合わせる） */
+.search-form-single-row {
     display: flex;
-    flex-direction: column;
-}
-
-.search-row {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
+    align-items: center;
+    gap: 10px; /* アイテム間のスペースを詰める */
+    width: 100%;
 }
 
 .search-group {
-    flex: 1;
+    flex: 1; /* 各検索グループを均等に広げる */
     min-width: 100px;
 }
 
 .name-email-group {
-    flex: 2; /* 名前/メールアドレスの入力欄を広げる */
+    flex: 2; /* 名前/メールアドレスの入力欄を広く */
+}
+
+/* 検索ボタンとリセットボタンのためのスペース */
+.search-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    /* 検索ボタンとリセットボタンを右端に寄せるためのflex-shrink */
+    flex-shrink: 0; 
 }
 
 .search-group input[type="text"],
 .search-group input[type="date"],
 .search-group select {
     width: 100%;
-    padding: 10px 15px;
+    padding: 8px 10px; /* パディングを少し小さく */
     border: 1px solid #ccc;
     border-radius: 3px;
     font-size: 14px;
     box-sizing: border-box;
-    background-color: #F8F8F8; /* 薄いグレーの背景 */
-}
-
-.search-group select {
-    appearance: none; /* デフォルトの矢印を非表示 */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 0.7em top 50%;
-    background-size: 0.65em auto;
-}
-
-.search-actions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
+    background-color: #F8F8F8;
 }
 
 .search-btn, .reset-btn {
-    padding: 10px 30px;
+    padding: 8px 15px; /* パディングを小さく */
     border: none;
     border-radius: 3px;
-    font-size: 16px;
+    font-size: 14px; /* フォントサイズも小さく */
     cursor: pointer;
-    transition: opacity 0.2s;
-    min-width: 150px;
+    min-width: 80px; /* ボタンの幅を調整 */
 }
 
 .search-btn {
     background-color: #7a6756; 
     color: white;
-}
-
-.search-btn:hover {
-    opacity: 0.85;
 }
 
 .reset-btn {
@@ -113,13 +94,18 @@
 ---------------------------------------------------- */
 .data-area {
     margin-top: 20px;
+    width: 100%;
 }
 
-.table-actions {
-    text-align: right;
-    margin-bottom: 15px;
+.table-actions-and-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* ページネーションとエクスポートボタンの位置調整 */
+    margin-bottom: 10px;
+    width: 100%;
 }
 
+/* 3. エクスポートボタンを左に配置 */
 .export-btn {
     background-color: transparent;
     border: 1px solid #7a6756;
@@ -131,72 +117,47 @@
     transition: background-color 0.2s;
 }
 
-.export-btn:hover {
-    background-color: #7a6756;
-    color: white;
-}
-
+/* 4. 不要な「全35件中 1〜7件表示」を削除するため、pagination-topを調整 */
 .pagination-top {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    font-size: 14px;
-    color: #666;
-}
-
-.pagination-links {
-    display: flex;
     align-items: center;
 }
 
-.dummy-links {
-    display: flex;
-    gap: 5px;
-}
-
-.page-link {
-    text-decoration: none;
-    color: #7a6756;
-    border: 1px solid #7a6756;
-    padding: 5px 10px;
-    border-radius: 3px;
-    transition: background-color 0.2s;
-    font-size: 14px;
-}
-
-.page-link.active {
-    background-color: #7a6756;
-    color: white;
+.pagination-info {
+    /* 削除されたため、スタイルは不要 */
 }
 
 /* テーブルデザイン */
 .contacts-table {
     width: 100%;
     border-collapse: collapse;
+    /* 5. 表の背景色は見出し以外白 */
     background-color: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .contacts-table th, .contacts-table td {
-    border: 1px solid #E0E0E0;
+    border: 1px solid #E0E0E0; /* 横罫線のみ残す */
     padding: 12px;
     text-align: left;
     font-size: 14px;
+    /* 5. 縦罫線を削除する設定 */
+    border-left: none;
+    border-right: none;
 }
 
 .contacts-table th {
-    background-color: #F5F5F5;
+    /* 2. 見出しの背景を茶色に、文字を白に */
+    background-color: #7a6756;
+    color: white;
     font-weight: 500;
-    color: #333;
+    /* 上下の罫線だけ残す */
+    border-top: 1px solid #7a6756; 
+    border-bottom: 1px solid #7a6756;
 }
 
-.contacts-table td {
-    color: #555;
-}
-
-.contacts-table tbody tr:nth-child(even) {
-    background-color: #FAFAFA;
+/* 表の最終行の下線は太くするか、見出しと同じ色に */
+.contacts-table tbody tr:last-child td {
+    border-bottom: 1px solid #E0E0E0;
 }
 
 .col-name { width: 15%; }
@@ -205,7 +166,12 @@
 .col-category { width: 25%; }
 .col-detail { width: 10%; text-align: center; }
 
+/* 6. 詳細ボタンを横並びに */
 .detail-btn {
+    /* インラインフレックスで文字とボタンのサイズを調整 */
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
     background-color: #7a6756;
     color: white;
     border: none;
@@ -213,11 +179,13 @@
     border-radius: 3px;
     cursor: pointer;
     font-size: 13px;
+    line-height: 1; /* ボタンの縦幅を詰める */
 }
 
 /* ----------------------------------------------------
    モーダルウィンドウ (Modal)
 ---------------------------------------------------- */
+/* (モーダルのスタイルは大きな変更がないため、以前のものを維持します) */
 .modal-overlay {
     position: fixed;
     top: 0;

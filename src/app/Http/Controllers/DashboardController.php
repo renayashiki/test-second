@@ -10,6 +10,13 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DashboardController extends Controller
 {
+    // お問い合わせの種類のマッピングを定義 (ID => 日本語名)
+    private $categoryMapping = [
+        1 => '商品の交換について',
+        2 => '商品の返品について',
+        3 => 'その他',
+    ];
+
     /**
      * お問い合わせ一覧の表示と検索処理
      * @param Request $request
@@ -23,68 +30,8 @@ class DashboardController extends Controller
         // --- 1. 名前・メールアドレス検索 (部分一致) ---
         if ($nameEmail = $request->input('name_email')) {
             $query->where(function ($q) use ($nameEmail) {
-
-                $cleanNameEmail = trim($nameEmail);
-
-                // Full name search (assuming contacts table has last_name and first_name)
-                $nameParts = explode(' ', $cleanNameEmail);
-
-                if (count($nameParts) > 1) {
-                    // For performance, this complex DB::raw may need optimization/indexing
-                    $q->orWhere(DB::raw("CONCAT(last_name, ' ', first_name)"), 'like', '%' . $cleanNameEmail . '%');
-                }
-
-                // Partial match on last_name, first_name, or email
-                $q->orWhere('last_name', 'like', '%' . $cleanNameEmail . '%')
-                    ->orWhere('first_name', 'like', '%' . $cleanNameEmail . '%')
-                    ->orWhere('email', 'like', '%' . $cleanNameEmail . '%');
-            });
-        }
-
-        // --- 2. 性別検索 ---
-        if ($gender = $request->input('gender')) {
-            if ($gender !== 'all' && $gender !== '性別') { // 「性別」というプレースホルダーも無視
-                $query->where('gender', $gender);
-            }
-        }
-
-        // --- 3. お問い合わせ種類検索 ---
-        if ($category = $request->input('category')) {
-            $query->where('category', $category); // Complete match
-        }
-
-        // --- 4. 日付での検索 ---
-        if ($date = $request->input('date')) {
-            $query->whereDate('created_at', $date);
-        }
-
-        // ページネーション (7件ごと)
-        // 🚨 修正箇所: withQueryString() の代わりに appends() を使用
-        // appends() に $request->except('page') を渡すことで、現在の検索クエリを保持します。
-        $contacts = $query->paginate(7)->appends($request->except('page'));
-
-        return view('admin.dashboard', compact('contacts'));
-    }
-
-    /**
-     * CSV形式でデータをエクスポート (応用機能)
-     * @param Request $request
-     * @return StreamedResponse
-     */
-    public function export(Request $request)
-    {
-        // 検索クエリの初期化
-        $query = Contact::query();
-
-        // 🚨 注意: indexメソッドの検索ロジックをここに移植します。
-        // リクエストから検索条件を取得し、エクスポート対象を絞り込みます。
-
-        // --- 1. 名前・メールアドレス検索 (部分一致) ---
-        if ($nameEmail = $request->input('name_email')) {
-            $query->where(function ($q) use ($nameEmail) {
                 $cleanNameEmail = trim($nameEmail);
                 $nameParts = explode(' ', $cleanNameEmail);
-
                 if (count($nameParts) > 1) {
                     $q->orWhere(DB::raw("CONCAT(last_name, ' ', first_name)"), 'like', '%' . $cleanNameEmail . '%');
                 }
@@ -102,6 +49,7 @@ class DashboardController extends Controller
         }
 
         // --- 3. お問い合わせ種類検索 ---
+        // $this->categoryMapping のキーであるIDで検索
         if ($category = $request->input('category')) {
             $query->where('category', $category);
         }
@@ -111,33 +59,85 @@ class DashboardController extends Controller
             $query->whereDate('created_at', $date);
         }
 
+        // ページネーション (7件ごと)
+        $contacts = $query->paginate(7)->appends($request->except('page'));
+
+        // 🚨 修正箇所: $categories をビューに渡す
+        $categories = $this->categoryMapping;
+
+        // $contacts と $categories をビューに渡す
+        return view('admin.dashboard', compact('contacts', 'categories'));
+    }
+
+    /**
+     * CSV形式でデータをエクスポート (応用機能)
+     * @param Request $request
+     * @return StreamedResponse
+     */
+    public function export(Request $request)
+    {
+        $query = Contact::query();
+
+        // --- 検索ロジック (indexメソッドから移植) ---
+        if ($nameEmail = $request->input('name_email')) {
+            $query->where(function ($q) use ($nameEmail) {
+                $cleanNameEmail = trim($nameEmail);
+                $nameParts = explode(' ', $cleanNameEmail);
+                if (count($nameParts) > 1) {
+                    $q->orWhere(DB::raw("CONCAT(last_name, ' ', first_name)"), 'like', '%' . $cleanNameEmail . '%');
+                }
+                $q->orWhere('last_name', 'like', '%' . $cleanNameEmail . '%')
+                    ->orWhere('first_name', 'like', '%' . $cleanNameEmail . '%')
+                    ->orWhere('email', 'like', '%' . $cleanNameEmail . '%');
+            });
+        }
+
+        if ($gender = $request->input('gender')) {
+            if ($gender !== 'all' && $gender !== '性別') {
+                $query->where('gender', $gender);
+            }
+        }
+
+        if ($category = $request->input('category')) {
+            $query->where('category', $category);
+        }
+
+        if ($date = $request->input('date')) {
+            $query->whereDate('created_at', $date);
+        }
+        // --- 検索ロジック 終了 ---
+
+        $categoryMapping = $this->categoryMapping; // カテゴリマッピングを取得
 
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="contacts_export_' . date('Ymd_His') . '.csv"',
         ];
 
-        $callback = function () use ($query) {
+        $callback = function () use ($query, $categoryMapping) {
             $file = fopen('php://output', 'w');
 
-            // Add UTF-8 BOM to prevent garbled characters in Excel
+            // UTF-8 BOM を追加して Excel での文字化けを防ぐ
             fwrite($file, "\xEF\xBB\xBF");
 
-            // CSV Header Row
+            // CSVヘッダー行
             fputcsv($file, ['ID', '氏名', '性別', 'メールアドレス', '電話番号', '住所', '建物名', 'お問い合わせの種類', '詳細', '登録日時']);
 
-            // Fetch and write data in chunks
-            $query->chunk(1000, function ($contacts) use ($file) {
+            // データの取得と書き込み
+            $query->chunk(1000, function ($contacts) use ($file, $categoryMapping) {
                 foreach ($contacts as $contact) {
+                    // 🚨 修正箇所: category ID を日本語名に変換して出力
+                    $categoryName = $categoryMapping[$contact->category] ?? '不明';
+
                     fputcsv($file, [
                         $contact->id,
-                        $contact->last_name . ' ' . $contact->first_name,
+                        $contact->last_name . ' ' . $contact->first_name, // フルネーム
                         $contact->gender,
                         $contact->email,
                         $contact->tel,
                         $contact->address,
                         $contact->building_name,
-                        $contact->category,
+                        $categoryName, // 日本語名
                         $contact->detail,
                         $contact->created_at,
                     ]);
@@ -151,7 +151,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * データの削除
+     * データの削除 (モーダル内の「削除」ボタン用)
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */

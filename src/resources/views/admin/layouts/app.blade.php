@@ -1,133 +1,99 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | FashionablyLate</title>
-    <!-- 認証画面の共通CSSを継承 -->
-    <link rel="stylesheet" href="{{ asset('css/auth/common.css') }}">
-    <!-- 管理画面専用CSS -->
+    <meta charset="utf-8">
+    <title>FashionablyLate - @yield('title', '管理画面')</title>
+    <!-- Interフォントを使用し、CSSを読み込む -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 🚨 管理画面用スタイルを読み込みます -->
     <link rel="stylesheet" href="{{ asset('css/admin/admin.css') }}">
-    <!-- 必要なフォントの読み込み (common.cssで定義されているTimes New Romanなどを想定) -->
+    <style>
+        /* モーダル表示のためのCSSをここに記述（必要に応じて） */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .modal-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-title {
+            font-size: 20px;
+            font-weight: 500;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .modal-detail-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .modal-label {
+            width: 120px;
+            font-weight: 500;
+            color: #555;
+            flex-shrink: 0;
+        }
+        .modal-value {
+            word-break: break-word;
+            white-space: pre-wrap;
+            flex-grow: 1;
+        }
+        .modal-actions {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .delete-btn-modal {
+            background-color: #E53E3E;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
-    <div id="admin-container">
-        <!-- 共通ヘッダー -->
-        <header class="app-header">
-            <div class="header-logo">FashionablyLate</div>
-            <nav class="header-nav">
-                <!-- ログアウトボタン -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="header-link logout-btn">logout</button>
-                </form>
-            </nav>
-        </header>
+    <!-- ヘッダー (ログイン後の共通ヘッダー) -->
+    <header class="admin-header">
+        <h1 class="admin-header-logo">FashionablyLate</h1>
+        <form method="POST" action="{{ route('logout') }}" class="logout-form">
+            @csrf
+            <button type="submit" class="logout-btn">ログアウト</button>
+        </form>
+    </header>
 
-        <!-- メインコンテンツとサイドバーのコンテナ -->
-        <main class="admin-main">
-            <!-- サイドバー（ここでは簡略化。見本画像にはないので、コンテンツ部分に統合します） -->
-            
-            <!-- コンテンツエリア -->
-            <div class="content-wrapper">
-                @yield('content')
-            </div>
-        </main>
+    <main class="admin-main">
+        @yield('content')
+    </main>
 
-    </div>
+    <!-- モーダルウィンドウのHTML構造（コンテンツ側で定義されるモーダルはここには含めない） -->
 
-    <!-- モーダルウィンドウのHTML構造 (詳細表示用) -->
-    <div id="detail-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <!-- 閉じるボタン -->
-            <button class="modal-close-btn">&times;</button>
-            <div id="modal-detail-body">
-                <!-- 詳細データがここに動的に挿入されます -->
-                <h2 class="modal-title">お問い合わせ内容 詳細</h2>
-                <div class="modal-detail-grid">
-                    <div class="detail-label">お名前</div>
-                    <div class="detail-value" data-field="name"></div>
-                    
-                    <div class="detail-label">性別</div>
-                    <div class="detail-value" data-field="gender"></div>
-                    
-                    <div class="detail-label">メールアドレス</div>
-                    <div class="detail-value" data-field="email"></div>
-                    
-                    <div class="detail-label">電話番号</div>
-                    <div class="detail-value" data-field="tel"></div>
-                    
-                    <div class="detail-label">住所</div>
-                    <div class="detail-value" data-field="address"></div>
-                    
-                    <div class="detail-label">建物名</div>
-                    <div class="detail-value" data-field="building"></div>
-                    
-                    <div class="detail-label">お問い合わせの種類</div>
-                    <div class="detail-value" data-field="category"></div>
-                </div>
-
-                <div class="detail-label full-width">お問い合わせ内容</div>
-                <div class="detail-value full-width text-area-like" data-field="detail"></div>
-            </div>
-            <button id="delete-from-modal-btn" class="delete-btn">削除</button>
-        </div>
-    </div>
-
-    <script>
-        // JavaScript for Modal (詳細表示/削除機能のために必要)
-        const detailModal = document.getElementById('detail-modal');
-        const modalCloseBtn = document.querySelector('.modal-close-btn');
-        const deleteFromModalBtn = document.getElementById('delete-from-modal-btn');
-        let currentContactId = null; 
-
-        // 詳細ボタンクリック時の処理
-        document.querySelectorAll('.detail-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const contactData = JSON.parse(e.target.dataset.contact);
-                currentContactId = contactData.id; 
-
-                // モーダルにデータを挿入 (実際のデータ構造に合わせてキーを調整してください)
-                document.querySelector('[data-field="name"]').textContent = contactData.name || 'N/A';
-                document.querySelector('[data-field="gender"]').textContent = contactData.gender || 'N/A';
-                document.querySelector('[data-field="email"]').textContent = contactData.email || 'N/A';
-                document.querySelector('[data-field="tel"]').textContent = contactData.tel || 'N/A';
-                document.querySelector('[data-field="address"]').textContent = contactData.address || 'N/A';
-                document.querySelector('[data-field="building"]').textContent = contactData.building || 'N/A';
-                document.querySelector('[data-field="category"]').textContent = contactData.category || 'N/A';
-                document.querySelector('[data-field="detail"]').textContent = contactData.detail || 'N/A';
-
-                detailModal.style.display = 'flex';
-            });
-        });
-
-        // 閉じるボタン or オーバーレイクリックでモーダルを閉じる
-        modalCloseBtn.addEventListener('click', () => {
-            detailModal.style.display = 'none';
-        });
-
-        detailModal.addEventListener('click', (e) => {
-            if (e.target === detailModal) {
-                detailModal.style.display = 'none';
-            }
-        });
-
-        // 削除ボタンクリック時の処理 (モーダル内)
-        deleteFromModalBtn.addEventListener('click', () => {
-            if (currentContactId) {
-                // 実際にはAJAXリクエストで削除エンドポイントを叩きます
-                // 例: fetch(`/api/contact/${currentContactId}`, { method: 'DELETE' }) ...
-                
-                if (window.confirm('本当にこのデータを削除しますか？')) {
-                    // ここに削除のためのフォーム送信やAjax処理を記述
-                    console.log(`Contact ID ${currentContactId} を削除`);
-                    
-                    // 削除後、モーダルを閉じる
-                    detailModal.style.display = 'none';
-                    // ページの再読み込み、または削除された行をDOMから削除する処理
-                }
-            }
-        });
-    </script>
+    @yield('scripts')
 </body>
 </html>
