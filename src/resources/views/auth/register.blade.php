@@ -41,14 +41,6 @@
                     <div class="error-message">{{ $message }}</div>
                 @enderror
             </div>
-            
-            <div class="form-group">
-                <div class="input-wrapper">
-                    <label for="password_confirmation" class="input-label">パスワード確認</label>
-                    <input id="password_confirmation" type="password" name="password_confirmation" placeholder="例: coachtech" required>
-                </div>
-            </div>
-
             <div class="form-action">
                 <button type="submit" class="auth-btn">登録</button>
             </div>

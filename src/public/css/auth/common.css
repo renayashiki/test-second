@@ -1,7 +1,7 @@
 /* 共通リセットと基本設定 */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #e6e2ddee; /* 4. 背景を薄いベージュに設定 */
+    background-color: #eee8e5; /* 🚨 復元: 薄いベージュ系の背景色 */
     margin: 0;
     padding: 0;
     color: #333;
@@ -12,13 +12,12 @@ body {
 
 /* ヘッダーデザイン (見本画像通り) */
 .app-header {
-    /* 🚨 1. FashionablyLate を真ん中配置に (gridを使用して中央寄せを維持しつつ、右端要素も配置) */
     display: grid;
-    grid-template-columns: 1fr auto 1fr; /* 左、中央、右の3列 */
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     padding: 20px 40px;
-    background-color: white; 
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .header-logo {
@@ -28,13 +27,13 @@ body {
     text-align: center;
     margin: 0;
     color: #7a6652;
-    grid-column: 2 / 3; /* 中央の列に配置 */
+    grid-column: 2 / 3;
 }
 
 /* ヘッダーのリンク/ボタン */
 .header-nav {
-    grid-column: 3 / 4; /* 右端の列に配置 */
-    justify-self: end; /* 右寄せ */
+    grid-column: 3 / 4;
+    justify-self: end;
 }
 
 .header-nav .header-link {
@@ -58,27 +57,25 @@ body {
 /* メインコンテンツレイアウト */
 main {
     flex-grow: 1;
-    /* 🚨 2. ログインとカードを一緒にFashionablyLateに寄せる形で上にずらす (padding-topを減らす) */
-    padding: 20px 0 50px 0; 
+    padding: 20px 0 50px 0;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* 上寄せを維持 */
-    background-color: transparent; 
+    align-items: flex-start;
+    /* bodyの背景を継承 */
+    background-color: inherit;
 }
 
 .auth-page-container {
     width: 100%;
-    /* 🚨 3. カードをもう少し正方形にして、入力欄を真ん中に配置 */
-    max-width: 450px; /* 横幅を少し狭く */
-    padding: 0; /* paddingを削除して、auth-cardのpaddingに任せる */
+    max-width: 450px;
+    padding: 0;
 }
 
 .page-title {
     font-size: 28px;
     font-weight: 500;
     text-align: center;
-    /* 🚨 2. タイトルとカードの距離を見本に合わせて詰める */
-    margin-bottom: 40px; 
+    margin-bottom: 20px; 
     font-family: 'Times New Roman', Times, serif;
     color: #7a6756;
 }
@@ -86,8 +83,7 @@ main {
 /* 認証カードの基本構造 */
 .auth-card {
     background-color: white;
-    /* 🚨 3. カードを正方形に近づけるため、paddingを調整 */
-    padding: 50px 60px; /* 左右を広げて正方形に近い縦横比にする */
+    padding: 50px 60px;
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
     border: 1px solid #E0E0E0; 
@@ -117,8 +113,7 @@ main {
 }
 
 .form-group input {
-    /* 🚨 3. カード内中央配置のため、幅を100%に戻し、paddingで余白を調整 */
-    width: 100%; 
+    width: 100%;
     padding: 10px 15px;
     border: none;
     border-radius: 3px;
@@ -128,12 +123,24 @@ main {
     background-color: #f0eeeed9;
 }
 
-/* 🚨 5. placeholderの文章をもう少し透かす */
 .form-group input::placeholder {
-    color: #999999; /* ベースのプレースホルダー色を少し暗く */
-    opacity: 0.6; /* 透明度を調整 */
+    color: #999999;
+    opacity: 0.6;
 }
 
+/* 共通ボタン (.auth-btn) スタイルの修正 */
+.auth-btn {
+    /* 共通で短い幅に固定し、入力欄の幅に影響されないようにする */
+    width: 100px;
+    min-width: 0;
+    padding: 6px 0;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: normal;
+    transition: background-color 0.2s;
+}
 
 /* エラーメッセージ */
 .error-message {
@@ -141,4 +148,40 @@ main {
     font-size: 13px;
     margin-top: 5px;
     font-weight: 400;
+}
+
+/* ログイン画面専用のスタイル */
+
+.login-page .form-action {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.login-page .auth-btn {
+    background-color: #7a6756; 
+    color: rgba(255, 255, 255, 0.838);
+    
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.login-page .auth-btn:hover {
+    background-color: #7a6756;
+}
+
+/* 登録画面専用のスタイル */
+
+.register-page .form-action {
+    text-align: center;
+    margin-top: 30px;
+    width: 100%; 
+}
+
+.register-page .auth-btn {
+    /* 見本画像に合わせて、暗めの茶色ボタン */
+    background-color: #7a6756; 
+    color: rgba(255, 255, 255, 0.779);
+}
+
+.register-page .auth-btn:hover {
+    background-color: #7a6756;
 }
