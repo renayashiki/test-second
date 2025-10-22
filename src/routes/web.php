@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use Laravel\Fortify\Features;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,17 +34,40 @@ Route::get('/thanks', [ContactController::class, 'thanks'])->name('contact.thank
 
 
 
-// ログインのPOSTのみカスタムコントローラーに切り替え
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+// Fortify 認証関連ルート
+Route::group(['middleware' => 'web'], function () {
 
-// Fortifyのデフォルトを使用: /register (GET/POST), /login (GET)
+  // 🚨 修正: ログインビュー（GET /login） - ゲストミドルウェアを外すことでループを阻止
+  Route::get('/login', \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class . '@create')
+    ->name('login');
 
-// ログアウト
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+  // 登録ビュー（GET /register） - ゲストミドルウェアを外すことでループを阻止
+  if (Features::enabled(Features::registration())) {
+    Route::get('/register', \Laravel\Fortify\Http\Controllers\RegisteredUserController::class . '@create')
+      ->name('register');
+  }
 
-// 管理画面
-// prefix('admin')とRoute::get('/')の組み合わせでURLが /admin となります
+  // ログイン処理（POST /login） - カスタムコントローラーを使用
+  Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
+  // ログアウト処理（POST /logout）
+  Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+  // 登録処理（POST /register） - Fortifyのデフォルトを使用
+  if (Features::enabled(Features::registration())) {
+    Route::post('/register', \Laravel\Fortify\Http\Controllers\RegisteredUserController::class . '@store');
+  }
+});
+
+
+// 管理画面 (ログイン必須)
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+  // URL: /admin (ダッシュボード表示と検索処理)
   Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-  // ...
+
+  // URL: /admin/export (CSVエクスポート処理)
+  Route::get('/export', [DashboardController::class, 'export'])->name('export');
+
+  // URL: /admin/{id} (削除処理。PUT/DELETEを使うのが一般的ですが、今回は簡単のためPOST/GETで対応)
+  Route::post('/delete/{id}', [DashboardController::class, 'delete'])->name('delete');
 });

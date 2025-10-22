@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,10 +12,13 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
+        // 認証処理を実行
         $request->authenticate();
 
+        // セッションを再生成
         $request->session()->regenerate();
 
+        // 🚨 修正: 認証が通ったら /admin へリダイレクト
         return redirect()->intended(RouteServiceProvider::ADMIN);
     }
 
@@ -27,6 +30,7 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        // ログアウト後は RouteServiceProvider::HOME (つまり /login) へリダイレクト
+        return redirect(RouteServiceProvider::HOME);
     }
 }

@@ -17,7 +17,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/';
+    public const HOME = '/login';
 
     // 認証後のリダイレクト先を '/admin' に設定
     public const ADMIN = '/admin';
