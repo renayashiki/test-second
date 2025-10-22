@@ -2,72 +2,70 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DashboardController; // 💡 修正: Admin\DashboardController を削除
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
 use Laravel\Fortify\Features;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
 |
 */
 
-// 1. お問い合わせフォームの入力画面
+// お問い合わせフォーム関連（一般ユーザー向け）
 Route::get('/', [ContactController::class, 'index'])->name('contact.index');
-
-
-// 2. 確認画面へのデータ送信と表示 (URL: /confirm)
 Route::post('/confirm', [ContactController::class, 'confirm'])->name('contact.confirm');
-//  ★★★ 修正ボタンの処理（セッションからデータを復元し、入力画面へリダイレクト）を追記 ★★★
-// confirm.blade.phpからGETでアクセスされることを想定
 Route::get('/back', [ContactController::class, 'back'])->name('contact.back');
-
-// 3. データ保存と完了画面への遷移 (URL: /thanks)
-// 完了画面の表示ルートと送信処理のルートを分け、完了画面へのURLもシンプルにします。
 Route::post('/thanks', [ContactController::class, 'send'])->name('contact.send');
 Route::get('/thanks', [ContactController::class, 'thanks'])->name('contact.thanks');
 
 
-
-
-// Fortify 認証関連ルート
+// --- 認証関連ルート (Fortifyを使用しつつカスタム) ---
 Route::group(['middleware' => 'web'], function () {
 
-  // 🚨 修正: ログインビュー（GET /login） - ゲストミドルウェアを外すことでループを阻止
-  Route::get('/login', \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class . '@create')
-    ->name('login');
+  // ログインビュー (GET /login)
+  // 💡 修正: AdminLoginController が存在しないため、Fortifyのデフォルトビューコントローラーを使用
+  Route::get('/login', \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class . '@create')->name('login');
 
-  // 登録ビュー（GET /register） - ゲストミドルウェアを外すことでループを阻止
+  // 登録ビュー (GET /register)
   if (Features::enabled(Features::registration())) {
     Route::get('/register', \Laravel\Fortify\Http\Controllers\RegisteredUserController::class . '@create')
       ->name('register');
   }
 
-  // ログイン処理（POST /login） - カスタムコントローラーを使用
+  // ログイン処理 (POST /login) - カスタムコントローラーを使用
   Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
-  // ログアウト処理（POST /logout）
-  Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
-
-  // 登録処理（POST /register） - Fortifyのデフォルトを使用
+  // 登録処理 (POST /register) - Fortifyのデフォルトを使用
   if (Features::enabled(Features::registration())) {
     Route::post('/register', \Laravel\Fortify\Http\Controllers\RegisteredUserController::class . '@store');
   }
+
+  // 注意: このセクションにはログアウトルートは定義しない
 });
 
 
-// 管理画面 (ログイン必須)
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-  // URL: /admin (ダッシュボード表示と検索処理)
-  Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+// --- 管理者画面ルート (ログイン必須) ---
+Route::prefix('admin')->name('admin.')->group(function () {
 
-  // URL: /admin/export (CSVエクスポート処理)
-  Route::get('/export', [DashboardController::class, 'export'])->name('export');
+  // ログアウトは認証ミドルウェアの外に置き、名前を admin.logout に確実に設定
+  Route::post('/logout', [AuthController::class, 'logout'])->name('logout'); // ルート名: admin.logout
 
-  // URL: /admin/{id} (削除処理。PUT/DELETEを使うのが一般的ですが、今回は簡単のためPOST/GETで対応)
-  Route::post('/delete/{id}', [DashboardController::class, 'delete'])->name('delete');
+  // ログイン必須の管理画面ルート (authミドルウェアが必要)
+  Route::middleware(['auth'])->group(function () {
+    // URL: /admin, ルート名: admin.dashboard
+    // 💡 修正: App\Http\Controllers\DashboardController を直接参照
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    // URL: /admin/export, ルート名: admin.export
+    Route::get('/export', [DashboardController::class, 'export'])->name('export');
+
+    // URL: /admin/contact/{id}, ルート名: admin.delete
+    Route::delete('/contact/{id}', [DashboardController::class, 'delete'])->name('delete');
+  });
 });

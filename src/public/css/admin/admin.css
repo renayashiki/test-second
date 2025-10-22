@@ -1,276 +1,596 @@
-/* ----------------------------------------------------
-   管理画面全体
----------------------------------------------------- */
-.admin-main {
-    width: 100%;
-    /* 2. 背景を白に設定 */
-    background-color: #FFFFFF; 
-    padding: 20px 0;
-    justify-content: center;
-    align-items: flex-start;
+/* 共通リセットと基本設定 */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #fffffffb; /* 薄い背景色 */
+    margin: 0;
+    padding: 0;
+    color: #71655af3;
+    min-height: 100vh;
 }
 
-.content-wrapper {
-    width: 90%;
-    max-width: 1200px;
-    padding: 0; /* paddingを削除して、検索欄と表の横幅を揃える */
-    margin: 0 auto;
+/* ------------------- 1. ヘッダーデザイン ------------------- */
+.admin-header {
+    /* FashionablyLateを中央に、logoutを右端に配置 */
+    display: flex;
+    justify-content: center; /* ロゴを中央に配置するためのFlex */
+    align-items: center;
+    padding: 20px 20px 10px; /* 下部に区切り線用の余白 */
+    background-color: white; 
+    position: relative; /* logoutボタン配置用 */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
+}
+
+.header-logo-admin {
+    font-size: 30px;
+    font-weight: 500;
+    font-family: 'Times New Roman';
+    margin: 0;
+    color: #71655af3;
+}
+
+/* ログアウトボタンを右端に配置 */
+.header-nav-admin {
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.logout-btn {
+    background-color: rgba(240, 239, 239, 0.868);
+    color: #d1b8a1dd; /* 落ち着いたブラウン系 */
+    border: 1px solid #d1b1a1dd; 
+    padding: 2px 12px; /* 見本に合わせてパディングを調整 */
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'Times New Roman'; 
+    transition: all 0.2s;
+}
+
+.logout-btn:hover {
+    background-color: #8B572A;
+    color: white;
+}
+
+/* FashionablyLate下の区切り線 */
+.admin-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-bottom: 1px solid #E0E0E0; /* 薄い灰色の線 */
+}
+
+/* ------------------- メインコンテンツ ------------------- */
+.admin-main {
+    flex-grow: 1;
+    padding: 20px 0 50px;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px; /* 管理画面の最大幅 */
+    padding: 0 20px;
 }
 
 .page-title {
-    text-align: left;
+    font-size: 28px;
+    font-weight: 500;
+    font-family: 'Times New Roman';
+    text-align: center;
     margin-bottom: 20px;
-    color: #333;
+    color: #71655af3;
 }
 
-/* ----------------------------------------------------
-   検索フォームエリア
----------------------------------------------------- */
+/* ------------------- 検索フォームエリア ------------------- */
 .search-form-area {
-    background-color: white; /* フォームの背景も白 */
-    padding: 0; /* フォームエリアのパディングを削除 */
     margin-bottom: 30px;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
 }
 
-/* 3. 検索欄を一行に（表の横幅と合わせる） */
-.search-form-single-row {
+/* 検索フォームの横並びを強制 */
+.search-form-row {
     display: flex;
     align-items: center;
-    gap: 10px; /* アイテム間のスペースを詰める */
-    width: 100%;
+    gap: 10px; /* 要素間の隙間 */
 }
 
-.search-group {
-    flex: 1; /* 各検索グループを均等に広げる */
-    min-width: 100px;
-}
-
-.name-email-group {
-    flex: 2; /* 名前/メールアドレスの入力欄を広く */
-}
-
-/* 検索ボタンとリセットボタンのためのスペース */
-.search-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    /* 検索ボタンとリセットボタンを右端に寄せるためのflex-shrink */
-    flex-shrink: 0; 
-}
-
-.search-group input[type="text"],
-.search-group input[type="date"],
+.search-group input,
 .search-group select {
-    width: 100%;
-    padding: 8px 10px; /* パディングを少し小さく */
-    border: 1px solid #ccc;
+    padding: 8px 10px;
+    border: 1px solid #D1D1D1;
     border-radius: 3px;
     font-size: 14px;
+    height: 38px;
     box-sizing: border-box;
-    background-color: #F8F8F8;
+    appearance: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E") no-repeat right 8px center / 18px;
+}
+
+.search-group input[type="date"] {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666' width='18px' height='18px'%3E%3Cpath d='M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM5 7V6h14v1H5z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E") no-repeat right 8px center / 18px;
+}
+
+/* 3. 検索欄の幅の調整 - 見本に忠実に */
+.search-name-email {
+    flex-grow: 1; 
+    min-width: 280px;
+    background-color: #ecececd0; 
+}
+.search-name-email input {
+    width: 100%;
+}
+.search-short {
+    flex-shrink: 0; 
+    width: 120px;
+    background-color: #ecececd0;
+}
+.search-short select, 
+.search-short input {
+    width: 100%;
+
+}
+.search-medium {
+    flex-shrink: 0;
+    width: 180px;
+    background-color: #ecececd0;
+}
+.search-medium select {
+    width: 100%;
+}
+
+.search-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .search-btn, .reset-btn {
-    padding: 8px 15px; /* パディングを小さく */
+    flex-grow: 1; 
+    padding: 8px 18px; 
     border: none;
     border-radius: 3px;
-    font-size: 14px; /* フォントサイズも小さく */
     cursor: pointer;
-    min-width: 80px; /* ボタンの幅を調整 */
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    height: 38px;
+    line-height: 22px; 
 }
 
 .search-btn {
-    background-color: #7a6756; 
-    color: white;
+    background-color: #71655af3;
+    color: rgba(255, 255, 255, 0.938);
+    font-weight: normal;
+}
+.search-btn:hover {
+    background-color: #6A421C;
 }
 
 .reset-btn {
-    background-color: #999;
+    background-color: #d4b7acea;
+    color: rgba(255, 255, 255, 0.885);
+}
+.reset-btn:hover {
+    background-color: #8C8C8C;
+}
+
+/* ------------------- データ表示とページネーション ------------------- */
+.data-area {
+    margin-top: 20px;
+}
+
+/* エクスポートボタン専用エリア (左寄せ) */
+.export-area {
+    margin-bottom: 10px;
+}
+
+.export-form button {
+    background-color: rgba(219, 214, 209, 0.878);
+    color: #5f4f42;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+.export-form button:hover {
+    background-color: #aaa29b;
     color: white;
 }
 
-/* ----------------------------------------------------
-   テーブルエリア
----------------------------------------------------- */
-.data-area {
-    margin-top: 20px;
-    width: 100%;
-}
-
-.table-actions-and-pagination {
+/* 【修正点1: ページネーションを右端に配置するラッパー】 */
+.pagination-area {
+    /* エクスポートエリアとは別の行に配置 */
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end; /* ページネーションとエクスポートボタンの位置調整 */
+    justify-content: flex-end; /* 右寄せ */
     margin-bottom: 10px;
-    width: 100%;
+    height: 30px; 
 }
 
-/* 3. エクスポートボタンを左に配置 */
-.export-btn {
-    background-color: transparent;
-    border: 1px solid #7a6756;
-    color: #7a6756;
-    padding: 8px 20px;
-    border-radius: 3px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+/* ページネーションリンクコンテナ */
+.pagination-links {
+    /* ページネーションの要素自体を内包するdiv */
 }
 
-/* 4. 不要な「全35件中 1〜7件表示」を削除するため、pagination-topを調整 */
-.pagination-top {
+
+/* Laravelのシンプルページネーションのラッパーと中身を調整 */
+.pagination-links nav[role="navigation"] {
     display: flex;
     align-items: center;
+    gap: 0px; 
+    justify-content: flex-end; /* リンク自体も右寄せ */
 }
 
-.pagination-info {
-    /* 削除されたため、スタイルは不要 */
+.pagination-links .page-item {
+    list-style: none;
 }
 
-/* テーブルデザイン */
+/* 個々のページリンクと矢印のスタイル - 見本に忠実なシンプルなボックス */
+.pagination-links .page-item a,
+.pagination-links .page-item span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; 
+    height: 30px;
+    padding: 0;
+    line-height: 1;
+    text-align: center;
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid #D1D1D1; 
+    color: #666;
+    transition: all 0.2s;
+    background-color: white;
+    margin: 0 -1px 0 0; /* ボーダーを重ねる */
+    box-sizing: border-box;
+}
+
+/* 'Prev' / 'Next' などのテキストを非表示にする */
+.pagination-links .page-item a span:first-child:not(.text-sm),
+.pagination-links .page-item span span:first-child:not(.text-sm) {
+    display: none; 
+}
+
+/* Prev/Nextボタンのテキストを「<」と「>」に修正 */
+.pagination-links .page-item:first-child a:after,
+.pagination-links .page-item:first-child span:after {
+    content: '‹'; 
+    display: inline-block;
+    font-size: 18px; 
+    line-height: 1;
+    position: relative;
+    top: -1px;
+}
+
+.pagination-links .page-item:last-child a:after,
+.pagination-links .page-item:last-child span:after {
+    content: '›'; 
+    display: inline-block;
+    font-size: 18px; 
+    line-height: 1;
+    position: relative;
+    top: -1px;
+}
+
+
+/* 最初と最後のボタンに角丸を適用 */
+.pagination-links .page-item:first-child a,
+.pagination-links .page-item:first-child span {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.pagination-links .page-item:last-child a,
+.pagination-links .page-item:last-child span {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    margin-right: 0;
+}
+
+/* アクティブなページ */
+.pagination-links .page-item.active .page-link {
+    background-color: #8B572A; 
+    border-color: #8B572A;
+    color: white;
+    font-weight: 500;
+    z-index: 1;
+}
+
+/* ホバー時のスタイル */
+.pagination-links .page-item a:hover:not(.active) {
+    background-color: #F0F0F0;
+    border-color: #8B572A;
+    color: #8B572A;
+}
+
+/* 無効なボタンの矢印 */
+.pagination-links .page-item.disabled span {
+    color: #D1D1D1; 
+    background-color: #F8F8F8;
+    cursor: not-allowed;
+}
+
+.pagination-links .page-item.disabled span:after {
+    color: #D1D1D1;
+}
+
+/* 省略記号のスタイル */
+.pagination-links .page-item.disabled span.text-sm {
+    border: none;
+    background: none;
+    color: #333;
+    padding: 0 5px;
+    width: auto;
+    height: auto;
+    margin: 0;
+}
+
+
+/* ------------------- テーブルデザイン ------------------- */
+
 .contacts-table {
     width: 100%;
     border-collapse: collapse;
-    /* 5. 表の背景色は見出し以外白 */
     background-color: white;
+    table-layout: fixed; 
+    /* 【修正点2: テーブル全体を囲む線を追加/色変更を確実に行う】*/
+    border: 1px solid #7a6652; /* 見本のヘッダー色に合わせて枠線を設定 */
+    border-radius: 5px;
+    overflow: hidden; 
 }
 
-.contacts-table th, .contacts-table td {
-    border: 1px solid #E0E0E0; /* 横罫線のみ残す */
-    padding: 12px;
-    text-align: left;
-    font-size: 14px;
-    /* 5. 縦罫線を削除する設定 */
-    border-left: none;
-    border-right: none;
+.contacts-table thead {
+    background-color: #7a6652; /* 見本に合わせたブラウン */
 }
 
 .contacts-table th {
-    /* 2. 見出しの背景を茶色に、文字を白に */
-    background-color: #7a6756;
+    background-color: #7a6652; 
     color: white;
+    padding: 12px 15px;
+    text-align: left;
     font-weight: 500;
-    /* 上下の罫線だけ残す */
-    border-top: 1px solid #7a6756; 
-    border-bottom: 1px solid #7a6756;
+    font-size: 14px;
+    border-right: none;
+    border-bottom: 1px solid #7a6652;
 }
 
-/* 表の最終行の下線は太くするか、見出しと同じ色に */
+.contacts-table td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #E0E0E0; /* ボディ内の横線は薄く */
+    font-size: 14px;
+    color: #7a6652;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-right: none;
+}
+
 .contacts-table tbody tr:last-child td {
-    border-bottom: 1px solid #E0E0E0;
+    border-bottom: none;
 }
 
-.col-name { width: 15%; }
-.col-gender { width: 8%; }
-.col-email { width: 25%; }
-.col-category { width: 25%; }
-.col-detail { width: 10%; text-align: center; }
 
-/* 6. 詳細ボタンを横並びに */
+/* テーブルカラム幅 */
+.contacts-table .col-name { width: 15%; }
+.contacts-table .col-gender { width: 8%; }
+.contacts-table .col-email { width: 25%; }
+.contacts-table .col-category { width: 20%; }
+.contacts-table .col-detail { width: 8%; text-align: center; }
+
+/* 詳細ボタン */
 .detail-btn {
-    /* インラインフレックスで文字とボタンのサイズを調整 */
-    display: inline-flex; 
-    align-items: center;
-    justify-content: center;
-    background-color: #7a6756;
-    color: white;
-    border: none;
-    padding: 6px 15px;
-    border-radius: 3px;
+    background: white;
+    color: #e2c6ab; 
+    border: 1px solid #e2c6ab;
+    padding: 5px 10px;
+    border-radius: 2px;
     cursor: pointer;
     font-size: 13px;
-    line-height: 1; /* ボタンの縦幅を詰める */
+    transition: all 0.2s;
+    white-space: nowrap;
 }
 
-/* ----------------------------------------------------
-   モーダルウィンドウ (Modal)
----------------------------------------------------- */
-/* (モーダルのスタイルは大きな変更がないため、以前のものを維持します) */
-.modal-overlay {
+.detail-btn:hover {
+    background: #7a6652;
+    color: white;
+}
+
+/* ------------------- モーダルデザイン ------------------- */
+.modal {
+    display: none; 
     position: fixed;
-    top: 0;
+    z-index: 1000;
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); 
     justify-content: center;
     align-items: center;
-    z-index: 1000;
 }
 
 .modal-content {
-    background-color: white;
-    padding: 40px;
-    border-radius: 5px;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 30px; 
+    border: 1px solid #888;
     width: 90%;
-    max-width: 600px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 10px;
     position: relative;
 }
 
-.modal-close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
+.modal-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0;
+    color: #333;
+}
+
+.modal-close {
+    color: #aaa;
+    font-size: 36px; 
+    font-weight: lighter; 
     background: none;
     border: none;
-    font-size: 28px;
     cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    position: absolute; 
+    top: 0px;
+    right: 0px;
+}
+
+.modal-body {
+    padding: 10px 0;
+}
+
+.modal-detail-row {
+    display: flex;
+    margin-bottom: 15px;
+    line-height: 1.4;
+    align-items: flex-start;
+}
+
+.modal-label {
+    font-weight: 500;
     color: #333;
+    min-width: 100px;
+    margin-right: 20px;
+    white-space: nowrap;
+    font-size: 14px;
 }
 
-.modal-title {
-    font-size: 24px;
-    color: #7a6756;
-    text-align: center;
-    margin-bottom: 30px;
+.modal-value {
+    color: #555;
+    flex-grow: 1;
+    font-size: 14px;
+    word-break: break-word; 
 }
 
-.modal-detail-grid {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    gap: 15px 10px;
-    margin-bottom: 20px;
+.modal-actions {
+    text-align: center; 
+    margin-top: 20px;
 }
 
-.detail-label {
-    font-weight: bold;
-    color: #7a6756;
-    padding-right: 10px;
-}
-
-.detail-value {
-    color: #333;
-    word-wrap: break-word;
-}
-
-.full-width {
-    grid-column: 1 / 3;
-}
-
-.text-area-like {
-    border: 1px solid #E0E0E0;
-    background-color: #F8F8F8;
-    padding: 10px;
-    min-height: 80px;
-    white-space: pre-wrap;
-}
-
-.delete-btn {
-    display: block;
-    width: 150px;
-    margin: 30px auto 0;
-    padding: 10px 20px;
-    background-color: #d9534f; /* 赤色 */
+.delete-btn-modal {
+    background-color: #7a6652; 
     color: white;
     border: none;
+    padding: 10px 20px;
     border-radius: 3px;
     cursor: pointer;
-    font-size: 16px;
-    transition: opacity 0.2s;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s;
 }
 
-.delete-btn:hover {
-    opacity: 0.85;
+.delete-btn-modal:hover {
+    background-color:#7a6652;
+}
+
+/* ------------------- レスポンシブ対応 ------------------- */
+@media (max-width: 1024px) {
+    /* 検索フォームの要素を折り返し */
+    .search-form-row {
+        flex-wrap: wrap; 
+        justify-content: flex-start;
+    }
+    
+    /* 検索/リセットボタンを右端ではなく、一行全体を使って配置する */
+    .search-actions {
+        width: 100%; 
+        justify-content: flex-start;
+        order: 5; 
+        margin-top: 10px;
+    }
+    
+    /* モバイルでは固定幅設定をリセット */
+    .search-name-email, .search-short, .search-medium {
+        min-width: auto;
+        width: calc(50% - 5px); /* 2列配置 */
+    }
+    
+    .search-name-email {
+        width: 100%; /* 名前/メールアドレスだけ1列 */
+    }
+
+    /* タブレットでのページネーション調整 - 右寄せは維持 */
+    .pagination-area {
+        height: auto;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .admin-header {
+        padding: 20px 20px 10px;
+    }
+
+    .header-nav-admin {
+        right: 20px;
+    }
+    
+    .search-form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-group,
+    .search-actions {
+        width: 100%;
+    }
+    .search-group input,
+    .search-group select {
+        width: 100%;
+    }
+
+    /* モバイルでは全て1列 */
+    .search-name-email, .search-short, .search-medium {
+        width: 100%;
+    }
+    
+    /* ページネーションを左寄せに戻す */
+    .pagination-area {
+        justify-content: flex-start;
+        margin-top: 5px;
+    }
+    
+    .pagination-links nav[role="navigation"] {
+        justify-content: flex-start;
+    }
+    
+    /* テーブルは横スクロールさせる */
+    .data-area {
+        overflow-x: auto;
+    }
+    .contacts-table {
+        min-width: 750px; /* スクロールさせるための最小幅 */
+    }
+    
+    .modal-content {
+        max-width: 95%;
+    }
 }

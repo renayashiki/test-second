@@ -20,5 +20,10 @@ class DatabaseSeeder extends Seeder
 
         // 2. contactsテーブルにダミーデータを35件作成
         Contact::factory()->count(35)->create();
+
+        $this->call([
+            // 💡 追記: 管理者用ダミーデータを作成するUserSeederを呼び出します
+            UserSeeder::class,
+        ]);
     }
 }
