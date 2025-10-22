@@ -20,6 +20,9 @@ Route::get('/', [ContactController::class, 'index'])->name('contact.index');
 
 // 2. 確認画面へのデータ送信と表示 (URL: /confirm)
 Route::post('/confirm', [ContactController::class, 'confirm'])->name('contact.confirm');
+//  ★★★ 修正ボタンの処理（セッションからデータを復元し、入力画面へリダイレクト）を追記 ★★★
+// confirm.blade.phpからGETでアクセスされることを想定
+Route::get('/back', [ContactController::class, 'back'])->name('contact.back');
 
 // 3. データ保存と完了画面への遷移 (URL: /thanks)
 // 完了画面の表示ルートと送信処理のルートを分け、完了画面へのURLもシンプルにします。

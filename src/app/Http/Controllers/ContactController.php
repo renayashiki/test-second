@@ -10,17 +10,13 @@ class ContactController extends Controller
     // ----------------------------------------------------
     // 1. 入力画面表示 (GET /)
     // ----------------------------------------------------
-    public function index()
+    public function index(Request $request)
     {
-        // 確認画面から「修正」で戻ってきた場合、セッションからデータを復元してビューに渡す
-        $contact = session('contact_data');
-
-        // セッションからデータを取り除き、次回のアクセスで古いデータが表示されないようにする
-        session()->forget('contact_data');
+        
 
         // old()ヘルパがセッションとリダイレクトからデータを取得するため、
         // 実際にはビューに渡す必要はありませんが、明示的に記述する場合は$contactを使用します。
-        return view('contact.index', compact('contact'));
+        return view('contact.index');
     }
 
     // ----------------------------------------------------
@@ -31,6 +27,9 @@ class ContactController extends Controller
     {
         // ContactRequestでバリデーションに成功したデータのみを取得
         $contact = $request->validated();
+        session(['contact_data' => $contact]);
+
+        return view('contact.confirm', compact('contact'));
 
         // 氏名と電話番号を結合して確認画面用に整形
         $contact['name'] = $contact['first_name'] . ' ' . $contact['last_name'];
@@ -48,8 +47,9 @@ class ContactController extends Controller
     public function send(Request $request)
     {
         // セッションから最終的な送信データを取り出す
-        $contact = $request->session()->get('contact_data');
 
+        $contact = $request->session()->get('contact_data');
+        
         if (!$contact) {
             // セッション切れなどでデータがない場合は入力画面に戻す
             return redirect()->route('contact.index');
@@ -64,7 +64,20 @@ class ContactController extends Controller
         // 完了画面へリダイレクト (二重送信防止のためPOSTの後にGETリダイレクトが望ましい)
         return redirect()->route('contact.thanks'); 
     }
-    
+    public function back(Request $request)
+    {
+        // セッションから一時保存したデータを取り出す
+        $contact = $request->session()->get('contact_data');
+
+        // セッションデータがない場合は入力画面へリダイレクト
+        if (!$contact) {
+            return redirect()->route('contact.index');
+        }
+
+        // セッションデータを withInput() にセットし、入力画面に戻る
+        // withInput($contact) を使用することで、index.blade.phpでold()ヘルパーが使えるようになる
+        return redirect()->route('contact.index')->withInput($contact);
+    }
     // ----------------------------------------------------
     // 4. 完了画面表示 (GET /thanks)
     // ----------------------------------------------------
