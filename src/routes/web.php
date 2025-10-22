@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
-
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,3 +29,21 @@ Route::get('/back', [ContactController::class, 'back'])->name('contact.back');
 // 完了画面の表示ルートと送信処理のルートを分け、完了画面へのURLもシンプルにします。
 Route::post('/thanks', [ContactController::class, 'send'])->name('contact.send');
 Route::get('/thanks', [ContactController::class, 'thanks'])->name('contact.thanks');
+
+
+
+
+// ログインのPOSTのみカスタムコントローラーに切り替え
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
+// Fortifyのデフォルトを使用: /register (GET/POST), /login (GET)
+
+// ログアウト
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+// 管理画面
+// prefix('admin')とRoute::get('/')の組み合わせでURLが /admin となります
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+  Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+  // ...
+});

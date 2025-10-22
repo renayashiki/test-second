@@ -77,9 +77,14 @@ body {
     margin-bottom: 30px;
 }
 
+/* すべてのテーブルセルに適用 */
+table td, table th {
+  text-align: left;
+}
+
 .confirm-row {
     display: flex;
-    /* 修正2: 行の区切り線は薄い色を維持 */
+    /* 行の区切り線は薄い色を維持 */
     border-bottom: 1px solid var(--table-border-color);
 }
 
@@ -105,7 +110,7 @@ body {
 
 .confirm-value {
     width: 65%;
-    padding: 15px 10px; 
+    padding: 15px 10px;
     font-size: 14px;
     color: var(--main-text-color);
     text-align: left;
@@ -117,6 +122,8 @@ body {
     border-right: 1px solid var(--value-border-color);
 }
 
+
+
 /* --- ボタンのスタイル (修正点: 横並びと下線リンク化) --- */
 
 .button-group {
@@ -125,7 +132,7 @@ body {
     justify-content: center; /* 中央に配置 */
     align-items: center;
     gap: 20px; /* ボタン間のスペース */
-    margin-top: 20px;
+    margin-top: 5px;
 }
 
 .submit-button {
@@ -161,3 +168,5 @@ body {
 .back-button:hover {
     opacity: 0.7;
 }
+
+
