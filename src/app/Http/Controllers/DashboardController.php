@@ -12,9 +12,11 @@ class DashboardController extends Controller
 {
     // お問い合わせの種類のマッピングを定義 (ID => 日本語名)
     private $categoryMapping = [
-        1 => '商品の交換について',
-        2 => '商品の返品について',
-        3 => 'その他',
+        1 => '商品のお届けについて',
+        2 => '商品の交換について',
+        3 => '商品トラブル',
+        4 => 'ショップへのお問い合わせ',
+        5 => 'その他',
     ];
 
     /**
@@ -49,9 +51,9 @@ class DashboardController extends Controller
         }
 
         // --- 3. お問い合わせ種類検索 ---
-        // $this->categoryMapping のキーであるIDで検索
+        // 🌟 修正箇所: カラム名を 'category_id' に修正
         if ($category = $request->input('category')) {
-            $query->where('category', $category);
+            $query->where('category_id', $category);
         }
 
         // --- 4. 日付での検索 ---
@@ -62,7 +64,6 @@ class DashboardController extends Controller
         // ページネーション (7件ごと)
         $contacts = $query->paginate(7)->appends($request->except('page'));
 
-        // 🚨 修正箇所: $categories をビューに渡す
         $categories = $this->categoryMapping;
 
         // $contacts と $categories をビューに渡す
@@ -98,8 +99,9 @@ class DashboardController extends Controller
             }
         }
 
+        // 🌟 修正箇所: カラム名を 'category_id' に修正
         if ($category = $request->input('category')) {
-            $query->where('category', $category);
+            $query->where('category_id', $category);
         }
 
         if ($date = $request->input('date')) {
@@ -127,7 +129,10 @@ class DashboardController extends Controller
             $query->chunk(1000, function ($contacts) use ($file, $categoryMapping) {
                 foreach ($contacts as $contact) {
                     // 🚨 修正箇所: category ID を日本語名に変換して出力
-                    $categoryName = $categoryMapping[$contact->category] ?? '不明';
+                    // $contact->category ではなく $contact->category_id を参照すべきだが、
+                    // Eloquentは外部キーを自動で category_id として扱うため、ここは models/Contact.php に依存する。
+                    // データベースのカラム名に合わせて、一旦 $contact->category_id に変更するのが最も安全。
+                    $categoryName = $categoryMapping[$contact->category_id] ?? '不明';
 
                     fputcsv($file, [
                         $contact->id,
