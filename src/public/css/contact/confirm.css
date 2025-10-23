@@ -93,6 +93,8 @@ table td, table th {
     border-bottom: none; 
 }
 
+
+
 .confirm-label {
     width: 35%;
     min-width: 150px;
@@ -170,3 +172,33 @@ table td, table th {
 }
 
 
+/* --- 最終調整: 性別と種類（short-row）の表示乱れを解消 --- */
+
+/* 1. 短い行の縦幅を調整（前回の修正で問題なかった部分） */
+.confirm-row.short-row {
+    min-height: 48px; 
+}
+
+/* 2. ラベルと値のパディングを調整 */
+.confirm-row.short-row .confirm-label,
+.confirm-row.short-row .confirm-value {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+/* 3. 【最重要】confirm-value内のspan要素を強制的に左寄せにする */
+.confirm-row.short-row .confirm-value span {
+    /* インライン要素なのでtext-alignは効きません。display: blockで左寄せを可能にします。 */
+    display: block !important;
+    /* 確実に左端から表示を開始させる */
+    text-align: left !important;
+    /* padding-leftを0にして、親要素のconfirm-valueのパディングのみに依存させる */
+    padding-left: 0 !important; 
+    margin: 0 !important;
+}
+
+/* 4. confirm-value 自体も念のため左寄せを確認（親のpadding-left: 10pxは確保） */
+.confirm-value {
+    text-align: left !important;
+    /* display: block; は .confirm-row が flex なので適用しません */
+}
