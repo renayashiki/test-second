@@ -135,8 +135,8 @@ body {
 }
 .search-short select, 
 .search-short input {
-    width: 100%;
-
+width: 100%;
+color: #7a6652dc;
 }
 .search-medium {
     flex-shrink: 0;
@@ -145,6 +145,7 @@ body {
 }
 .search-medium select {
     width: 100%;
+    color: #7a6652dc;
 }
 
 .search-actions {
@@ -222,119 +223,157 @@ body {
     /* ページネーションの要素自体を内包するdiv */
 }
 
+/* ------------------- 【ページネーションのCSS部分】 ------------------- */
 
-/* Laravelのシンプルページネーションのラッパーと中身を調整 */
-.pagination-links nav[role="navigation"] {
+.visuallyhidden {
+    clip: rect(1px, 1px, 1px, 1px);
+    height: 1px;
+    overflow: hidden;
+    position: absolute !important;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.pagination {
     display: flex;
-    align-items: center;
-    gap: 0px; 
-    justify-content: flex-end; /* リンク自体も右寄せ */
+    justify-content: center;
+    text-align: center;
+    border: 1px solid #7a6652; /* 全体を囲む線を見本の色(#7a6652)に設定 */
+    border-radius: 3px;
 }
 
-.pagination-links .page-item {
-    list-style: none;
-}
-
-/* 個々のページリンクと矢印のスタイル - 見本に忠実なシンプルなボックス */
-.pagination-links .page-item a,
-.pagination-links .page-item span {
+.pagination a,
+.pagination span {
+    /* 共通のボタンデザイン */
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 30px; 
+    padding: 0 .7rem;
+    min-width: 30px;
     height: 30px;
-    padding: 0;
-    line-height: 1;
-    text-align: center;
-    font-size: 14px;
+    background-color: white; /* ボタンの背景色 */
     text-decoration: none;
-    border: 1px solid #D1D1D1; 
-    color: #666;
-    transition: all 0.2s;
-    background-color: white;
-    margin: 0 -1px 0 0; /* ボーダーを重ねる */
+    color: #7a6652; /* 文字色を見本の色に設定 */
+    font-size: 14px;
+    border-right: 1px solid #7a6652; /* 各ボタン間の縦線を見本の色に設定 */
     box-sizing: border-box;
 }
 
-/* 'Prev' / 'Next' などのテキストを非表示にする */
-.pagination-links .page-item a span:first-child:not(.text-sm),
-.pagination-links .page-item span span:first-child:not(.text-sm) {
-    display: none; 
+.pagination span {
+    /* 無効なボタンのスタイルを調整 */
+    color: #a0978e;
+    cursor: default;
+    background-color: #f7f5f3;
 }
 
-/* Prev/Nextボタンのテキストを「<」と「>」に修正 */
-.pagination-links .page-item:first-child a:after,
-.pagination-links .page-item:first-child span:after {
-    content: '‹'; 
-    display: inline-block;
-    font-size: 18px; 
+.pagination a:hover,
+.pagination a:focus {
+    background-color: #f0f0f0; /* ホバー時の背景色を薄く */
+}
+
+/* ページネーションの矢印（最初と最後）のボーダーを調整 */
+.pagination a:first-child,
+.pagination span:first-child {
+    border-left: none; /* 全体を囲む線があるので不要 */
+}
+.pagination a:last-child,
+.pagination span:last-child {
+    border-right: none; /* 全体を囲む線があるので不要 */
+}
+
+
+.pagination__arrow {
+    /* 矢印ボタンの幅を固定 */
+    min-width: 30px;
+}
+
+.pagination__prev::before {
+    content: '‹';
+    font-size: 18px;
     line-height: 1;
-    position: relative;
-    top: -1px;
 }
-
-.pagination-links .page-item:last-child a:after,
-.pagination-links .page-item:last-child span:after {
-    content: '›'; 
-    display: inline-block;
-    font-size: 18px; 
+.pagination__next::before {
+    content: '›';
+    font-size: 18px;
     line-height: 1;
-    position: relative;
-    top: -1px;
+}
+
+/* 最後のページ番号ボタンの右側の線だけを消す */
+.pagination__items li:last-child a,
+.pagination__items li:last-child span {
+    border-right: none;
 }
 
 
-/* 最初と最後のボタンに角丸を適用 */
-.pagination-links .page-item:first-child a,
-.pagination-links .page-item:first-child span {
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px;
-}
-
-.pagination-links .page-item:last-child a,
-.pagination-links .page-item:last-child span {
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-    margin-right: 0;
-}
-
-/* アクティブなページ */
-.pagination-links .page-item.active .page-link {
-    background-color: #8B572A; 
-    border-color: #8B572A;
-    color: white;
-    font-weight: 500;
-    z-index: 1;
-}
-
-/* ホバー時のスタイル */
-.pagination-links .page-item a:hover:not(.active) {
-    background-color: #F0F0F0;
-    border-color: #8B572A;
-    color: #8B572A;
-}
-
-/* 無効なボタンの矢印 */
-.pagination-links .page-item.disabled span {
-    color: #D1D1D1; 
-    background-color: #F8F8F8;
-    cursor: not-allowed;
-}
-
-.pagination-links .page-item.disabled span:after {
-    color: #D1D1D1;
-}
-
-/* 省略記号のスタイル */
-.pagination-links .page-item.disabled span.text-sm {
-    border: none;
-    background: none;
-    color: #333;
-    padding: 0 5px;
-    width: auto;
-    height: auto;
+.pagination__items {
     margin: 0;
+    padding: 0;
+    display: flex;
+    list-style: none;
+    counter-reset: pagination;
+    margin: 0;
+    
+    /* ページ番号ボタンの幅を固定 */
+    li a, li span {
+        min-width: 30px;
+        padding: 0;
+    }
+    
+    li {
+        position: absolute;
+        top: -100vh;
+        counter-increment: pagination;
+        
+        &:first-child,
+        &:last-child {
+            position: static;
+        }
+        &.is-active {
+            position: static;
+            
+            &:not(:nth-child(1)):not(:nth-child(2))::before {
+                content: '...';
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0 .7rem;
+                background-color: white;
+                margin: 0;
+                height: 30px;
+                min-width: 30px;
+                border-right: 1px solid #7a6652;
+                color: #7a6652;
+                font-weight: bold;
+            }
+            & + li,
+            & + li + li {
+                position: static;
+            }
+            & + li + li:not(:last-child):not(:nth-last-child(2))::after {
+                content: '...';
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0 .7rem;
+                background-color: white;
+                margin: 0;
+                height: 30px;
+                min-width: 30px;
+                border-right: 1px solid #7a6652;
+                color: #7a6652;
+                font-weight: bold;
+            }
+        }
+    }
+    a::before {
+        content: counter(pagination); /* ページ番号を自動挿入 */
+    }
+    .is-active a {
+        background-color: #7a6652; /* アクティブなページは背景色を茶色に */
+        color: white; /* 文字色を白に */
+    }
 }
+/* ------------------- 【ページネーションのCSS部分：修正終わり】 ------------------- */
 
 
 /* ------------------- テーブルデザイン ------------------- */
@@ -344,8 +383,8 @@ body {
     border-collapse: collapse;
     background-color: white;
     table-layout: fixed; 
-    /* 【修正点2: テーブル全体を囲む線を追加/色変更を確実に行う】*/
-    border: 1px solid #7a6652; /* 見本のヘッダー色に合わせて枠線を設定 */
+    /* 【テーブル全体を囲む線】*/
+    border: 1px solid #7a6652; 
     border-radius: 5px;
     overflow: hidden; 
 }
@@ -446,7 +485,7 @@ body {
     font-size: 20px;
     font-weight: 500;
     margin: 0;
-    color: #333;
+    color: #7a6652;
 }
 
 .modal-close {

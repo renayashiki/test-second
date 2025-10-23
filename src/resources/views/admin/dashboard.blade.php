@@ -82,15 +82,49 @@
                             </form>
                         </div>
                         
-                        {{-- 【修正点1: ページネーションリンクを右端に配置するためのラッパー】 --}}
+                        {{-- 【ページネーション部分】 --}}
                         <div class="pagination-area">
                             <div class="pagination-links">
-                                {{-- シンプルなページネーションビューを使用 --}}
-                                {{ $contacts->links('pagination::simple-bootstrap-4') }} 
+                                {{-- ページネーション全体を囲むnavタグ --}}
+                                @if ($contacts->hasPages())
+                                    <nav class="pagination" role="navigation" aria-label="Pagination">
+                                        {{-- PREVボタン --}}
+                                        @if (!$contacts->onFirstPage())
+                                            <a href="{{ $contacts->previousPageUrl() }}" class="pagination__arrow pagination__prev">
+                                                <span class="visuallyhidden">Previous Page</span>
+                                            </a>
+                                        @else
+                                            <span class="pagination__arrow pagination__prev pagination--disabled" aria-disabled="true">
+                                                <span class="visuallyhidden">Previous Page</span>
+                                            </span>
+                                        @endif
+                                        
+                                        <ul class="pagination__items">
+                                            @foreach ($contacts->getUrlRange(1, $contacts->lastPage()) as $page => $url)
+                                                <li class="{{ $page == $contacts->currentPage() ? 'is-active' : '' }}">
+                                                    <a href="{{ $url }}{{ request()->getQueryString() ? '&' . request()->getQueryString() : '' }}" 
+                                                       @if ($page == $contacts->currentPage()) aria-current="page" @endif
+                                                    ></a> 
+                                                </li>
+                                            @endforeach
+                                        </ul>
+
+                                        {{-- NEXTボタン --}}
+                                        @if ($contacts->hasMorePages())
+                                            <a href="{{ $contacts->nextPageUrl() }}" class="pagination__arrow pagination__next">
+                                                <span class="visuallyhidden">Next Page</span>
+                                            </a>
+                                        @else
+                                            <span class="pagination__arrow pagination__next pagination--disabled" aria-disabled="true">
+                                                <span class="visuallyhidden">Next Page</span>
+                                            </span>
+                                        @endif
+                                    </nav>
+                                @endif
                             </div>
                         </div>
-
-                        {{-- 【修正点2: テーブル全体を囲む線のためにcontacts-tableクラスにCSSを適用】 --}}
+                        
+                        {{-- 【テーブル本体】 --}}
                         <table class="contacts-table">
                             <thead>
                                 <tr>
